@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>B&uacute;squeda instant&aacute;nea en Youtube - jQuery/ajax</title>
+    <link href='http://deilusia.github.com/css/default.css' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function()
+    {
+        $(".search").keyup(function() 
+        {
+            var item_search = $(this).val();
+            var key= encodeURIComponent(item_search);
+            var url='http://gdata.youtube.com/feeds/api/videos?q='+key+'&format=5&max-results=1&v=2&alt=jsonc'; 
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType:"jsonp",
+                success: function(response)
+                {
+                    if(response.data.items)
+                    {
+                        $.each(response.data.items, function(i,data)
+                        {
+                            var id=data.id;
+                            var title=data.title;
+                            var views=data.viewCount;
+                            var iframe="<iframe width='640' height='385' src='http://www.youtube.com/embed/"+id+"' frameborder='0' type='text/html'></iframe>";
+                            var final="<div id='title'>"+title+"</div><div>"+iframe+"</div><div id='count'>"+views+" Views</div>";
+                            $("#video_result").html(final);
+                        });
+                    }
+                }
+            });
+        });
+    });
+    </script>
+    <style>
+        .search
+        {
+            border: none;
+            padding: 5px;
+            width: 45%;
+            font-size: 16px;
+        }
+        #video_result
+        {
+            margin: 20px auto 0;
+            min-height: 350px;
+            width: 640px;
+            border: solid 10px 
+            #F96E5B;
+        }
+        #title
+        {
+            background-color:#F96E5B;
+            font-size:15px;
+            text-align:center;
+            padding:10px;
+        }
+        #count
+        {
+            background-color:#F96E5B;
+            text-align: right;
+            padding:10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h3><a href="http://deilusia.github.com">Made w/ &#9829 by Elena</a></h3>
+        <h2>B&uacute;squeda instant&aacute;nea en Youtube - jQuery/ajax</h2>
+    </header>
+    <section id="content">
+        Search: <input type="text" class="search" /><br/>
+        <div id="video_result"></div>
+    </section>
+</body>
+</html>
